@@ -37,12 +37,14 @@ var (
 // an arbitrary struct that the caller is aware of.
 func Fetch(client *http.Client, url url.URL, target interface{}) error {
 	clientLog.Debug("Attempting to request data from ", url.String())
+	log.Debug("Client Fetch called.")
 	req, err := http.NewRequest("GET", url.String(), nil)
 	if err != nil {
 		return err
 	}
 
 	req.Header.Set("User-Agent", USERAGENT)
+	//req.SetBasicAuth(username, passwd)
 
 	resp, err := client.Do(req)
 	if err != nil {

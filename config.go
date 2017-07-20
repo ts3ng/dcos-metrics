@@ -53,7 +53,7 @@ type Config struct {
 	Producers         ProducersConfig `yaml:"producers"`
 	IAMConfigPath     string          `yaml:"iam_config_path"`
 	CACertificatePath string          `yaml:"ca_certificate_path"`
-
+	FrameworkAuth     AuthConfig      `yaml:"framework_auth"`
 	// Node info
 	nodeInfo collectors.NodeInfo
 
@@ -62,6 +62,11 @@ type Config struct {
 	ConfigPath  string
 	LogLevel    string
 	VersionFlag bool
+}
+
+type AuthConfig struct {
+	Principal string `yaml:principal`
+	Secret    string `yaml:secret`
 }
 
 // CollectorConfig contains configuration options relevant to the "collector"
@@ -119,6 +124,10 @@ func (c *Config) getNodeInfo() error {
 	if len(c.IAMConfigPath) > 0 {
 		stateURL = "https://leader.mesos:5050/state"
 	}
+	if len(c.FrameworkAuth.Principal) > 0 {
+		stateURL = "http://" + c.FrameworkAuth.Principal + ":" + c.FrameworkAuth.Secret + "@leader.mesos:5050/state"
+	}
+	log.Info("StateURL: ", stateURL)
 	node, err := nodeutil.NewNodeInfo(client, c.DCOSRole, nodeutil.OptionMesosStateURL(stateURL))
 	if err != nil {
 		return fmt.Errorf("error: could not get nodeInfo: %s", err)
@@ -178,6 +187,10 @@ func newConfig() Config {
 				Port:        9000,
 			},
 		},
+		FrameworkAuth: AuthConfig{
+			Principal: "",
+			Secret:    "",
+		},
 		LogLevel: "info",
 	}
 }
@@ -205,13 +218,14 @@ func getNewConfig(args []string) (Config, error) {
 		}, "\n"))
 		os.Exit(0)
 	}
-
+	log.Info("Configpath: ", c.ConfigPath)
 	if len(c.ConfigPath) > 0 {
 		if err := c.loadConfig(); err != nil {
 			return c, err
 		}
+	} else {
+		log.Warnf("No config file specified, using all defaults.")
 	}
-	log.Warnf("No config file specified, using all defaults.")
 
 	if len(strings.Split(c.DCOSRole, " ")) != 1 {
 		return c, fmt.Errorf("error: must specify exactly one DC/OS role (master or agent)")
