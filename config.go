@@ -71,8 +71,6 @@ type CollectorConfig struct {
 	Framework    *framework.Collector  `yaml:"framework,omitempty"`
 	Node         *node.Collector       `yaml:"node,omitempty"`
 	MesosAgent   *mesosAgent.Collector `yaml:"mesos_agent,omitempty"`
-	Principal    *string               `yaml:"principal,omitempty"`
-	Secret       *string               `yaml:"secret,omitempty"`
 }
 
 // ProducersConfig contains references to other structs that provide individual producer configs.
@@ -120,8 +118,8 @@ func (c *Config) getNodeInfo() error {
 	if len(c.IAMConfigPath) > 0 {
 		stateURL = "https://leader.mesos:5050/state"
 	}
-	if len(*c.Collector.Principal) > 0 {
-		stateURL = "http://" + *c.Collector.Principal + ":" + *c.Collector.Secret + "@leader.mesos:5050/state"
+	if len(c.Collector.MesosAgent.Principal) > 0 {
+		stateURL = "http://" + c.Collector.MesosAgent.Principal + ":" + c.Collector.MesosAgent.Secret + "@leader.mesos:5050/state"
 	}
 	log.Info("StateURL: ", stateURL)
 	node, err := nodeutil.NewNodeInfo(client, c.DCOSRole, nodeutil.OptionMesosStateURL(stateURL))
