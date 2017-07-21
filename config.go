@@ -250,6 +250,8 @@ func getNewConfig(args []string) (Config, error) {
 	}
 
 	c.Collector.MesosAgent.HTTPClient = collectorClient
+	c.Collector.httpauth_user = c.FrameworkAuth.Principal
+	c.Collector.httpauth_pass = c.FrameworkAuth.Secret
 
 	return c, nil
 }
