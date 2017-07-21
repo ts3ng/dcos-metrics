@@ -84,5 +84,5 @@ func (c *Collector) getContainerMetrics() error {
 
 	c.HTTPClient.Timeout = HTTPTIMEOUT
 
-	return client.Fetch(c.HTTPClient, u, &c.containerMetrics)
+	return client.Fetch(c.HTTPClient, u, &c.containerMetrics, c.httpauth_user, c.httpauth_pass)
 }

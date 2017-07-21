@@ -35,16 +35,16 @@ var (
 // way, Fetch() ensures that JSON is always unmarshaled the same way, and that
 // errors are handled correctly, but allows the returned data to be mapped to
 // an arbitrary struct that the caller is aware of.
-func Fetch(client *http.Client, url url.URL, target interface{}) error {
+func Fetch(client *http.Client, url url.URL, target interface{}, httpuser string, httppass string) error {
 	clientLog.Debug("Attempting to request data from ", url.String())
-	log.Debug("Client Fetch called.")
+	log.Info("Client Fetch called.")
 	req, err := http.NewRequest("GET", url.String(), nil)
 	if err != nil {
 		return err
 	}
 
 	req.Header.Set("User-Agent", USERAGENT)
-	//req.SetBasicAuth(username, passwd)
+	req.SetBasicAuth(httpuser, httppass)
 
 	resp, err := client.Do(req)
 	if err != nil {
