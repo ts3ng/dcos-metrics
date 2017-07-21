@@ -37,21 +37,15 @@ type Collector struct {
 	nodeInfo    collectors.NodeInfo
 	nodeMetrics []producers.Datapoint
 	timestamp   int64
-
-	//http basic auth
-	httpauth_user string
-	httpauth_pass string
 }
 
 // New returns a new instance of the node metrics collector and a metrics chan.
 func New(cfg Collector, nodeInfo collectors.NodeInfo) (Collector, chan producers.MetricsMessage) {
 	c := Collector{
-		PollPeriod:    cfg.PollPeriod,
-		MetricsChan:   make(chan producers.MetricsMessage),
-		log:           log.WithFields(log.Fields{"collector": "node"}),
-		nodeInfo:      nodeInfo,
-		httpauth_user: "",
-		httpauth_pass: "",
+		PollPeriod:  cfg.PollPeriod,
+		MetricsChan: make(chan producers.MetricsMessage),
+		log:         log.WithFields(log.Fields{"collector": "node"}),
+		nodeInfo:    nodeInfo,
 	}
 	return c, c.MetricsChan
 }

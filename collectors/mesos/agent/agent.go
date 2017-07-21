@@ -55,8 +55,8 @@ type Collector struct {
 	timestamp   int64
 
 	//basic auth
-	httpauth_user string
-	httpauth_pass string
+	Principal string `yaml:principal`
+	Secret    string `yaml:secret`
 }
 
 // New creates a new instance of the Mesos agent collector (poller).
@@ -65,8 +65,6 @@ func New(cfg Collector, nodeInfo collectors.NodeInfo) (Collector, chan producers
 	c.log = logrus.WithFields(logrus.Fields{"collector": "mesos-agent"})
 	c.nodeInfo = nodeInfo
 	c.metricsChan = make(chan producers.MetricsMessage)
-	c.httpauth_user = ""
-	c.httpauth_pass = ""
 	return c, c.metricsChan
 }
 

@@ -47,8 +47,9 @@ func main() {
 	log.SetLevel(lvl)
 
 	//AuthConfig
-	if len(cfg.FrameworkAuth.Principal) > 0 {
-		log.Info("Framework authentication set to principal", cfg.FrameworkAuth.Principal)
+	if len(*cfg.Collector.Principal) > 0 {
+		log.Info("Framework authentication set to principal", *cfg.Collector.Principal)
+	}
 
 	// HTTP profiling
 	if cfg.Collector.HTTPProfiler {

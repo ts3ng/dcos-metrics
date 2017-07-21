@@ -75,5 +75,5 @@ func (c *Collector) getAgentState() error {
 
 	c.HTTPClient.Timeout = HTTPTIMEOUT
 
-	return client.Fetch(c.HTTPClient, u, &c.agentState, c.httpauth_user, c.httpauth_pass)
+	return client.Fetch(c.HTTPClient, u, &c.agentState, c.Principal, c.Secret)
 }

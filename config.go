@@ -53,7 +53,6 @@ type Config struct {
 	Producers         ProducersConfig `yaml:"producers"`
 	IAMConfigPath     string          `yaml:"iam_config_path"`
 	CACertificatePath string          `yaml:"ca_certificate_path"`
-	FrameworkAuth     AuthConfig      `yaml:"framework_auth"`
 	// Node info
 	nodeInfo collectors.NodeInfo
 
@@ -64,11 +63,6 @@ type Config struct {
 	VersionFlag bool
 }
 
-type AuthConfig struct {
-	Principal string `yaml:principal`
-	Secret    string `yaml:secret`
-}
-
 // CollectorConfig contains configuration options relevant to the "collector"
 // portion of this project. That is, the code responsible for querying Mesos,
 // et. al to gather metrics and send them to a "producer".
@@ -77,6 +71,8 @@ type CollectorConfig struct {
 	Framework    *framework.Collector  `yaml:"framework,omitempty"`
 	Node         *node.Collector       `yaml:"node,omitempty"`
 	MesosAgent   *mesosAgent.Collector `yaml:"mesos_agent,omitempty"`
+	Principal    *string               `yaml:"principal,omitempty"`
+	Secret       *string               `yaml:"secret,omitempty"`
 }
 
 // ProducersConfig contains references to other structs that provide individual producer configs.
@@ -124,8 +120,8 @@ func (c *Config) getNodeInfo() error {
 	if len(c.IAMConfigPath) > 0 {
 		stateURL = "https://leader.mesos:5050/state"
 	}
-	if len(c.FrameworkAuth.Principal) > 0 {
-		stateURL = "http://" + c.FrameworkAuth.Principal + ":" + c.FrameworkAuth.Secret + "@leader.mesos:5050/state"
+	if len(*c.Collector.Principal) > 0 {
+		stateURL = "http://" + *c.Collector.Principal + ":" + *c.Collector.Secret + "@leader.mesos:5050/state"
 	}
 	log.Info("StateURL: ", stateURL)
 	node, err := nodeutil.NewNodeInfo(client, c.DCOSRole, nodeutil.OptionMesosStateURL(stateURL))
@@ -187,10 +183,6 @@ func newConfig() Config {
 				Port:        9000,
 			},
 		},
-		FrameworkAuth: AuthConfig{
-			Principal: "",
-			Secret:    "",
-		},
 		LogLevel: "info",
 	}
 }
@@ -250,8 +242,6 @@ func getNewConfig(args []string) (Config, error) {
 	}
 
 	c.Collector.MesosAgent.HTTPClient = collectorClient
-	c.Collector.httpauth_user = c.FrameworkAuth.Principal
-	c.Collector.httpauth_pass = c.FrameworkAuth.Secret
 
 	return c, nil
 }
