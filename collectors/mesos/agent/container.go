@@ -19,8 +19,6 @@ import (
 	"net/url"
 	"strconv"
 
-	log "github.com/Sirupsen/logrus"
-
 	"github.com/dcos/dcos-metrics/util/http/client"
 )
 
@@ -85,6 +83,5 @@ func (c *Collector) getContainerMetrics() error {
 	}
 
 	c.HTTPClient.Timeout = HTTPTIMEOUT
-	log.Info("calling Fetch from container: ", c.Principal, ":", c.Secret)
 	return client.Fetch(c.HTTPClient, u, &c.containerMetrics, c.Principal, c.Secret)
 }

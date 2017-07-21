@@ -65,7 +65,6 @@ func New(cfg Collector, nodeInfo collectors.NodeInfo) (Collector, chan producers
 	c.log = logrus.WithFields(logrus.Fields{"collector": "mesos-agent"})
 	c.nodeInfo = nodeInfo
 	c.metricsChan = make(chan producers.MetricsMessage)
-	c.log.Info("New Collector: ", c.Principal, ":", c.Secret)
 	return c, c.metricsChan
 }
 

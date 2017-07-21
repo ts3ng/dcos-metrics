@@ -121,7 +121,6 @@ func (c *Config) getNodeInfo() error {
 	if len(c.Collector.MesosAgent.Principal) > 0 {
 		stateURL = "http://" + c.Collector.MesosAgent.Principal + ":" + c.Collector.MesosAgent.Secret + "@leader.mesos:5050/state"
 	}
-	log.Info("StateURL: ", stateURL)
 	node, err := nodeutil.NewNodeInfo(client, c.DCOSRole, nodeutil.OptionMesosStateURL(stateURL))
 	if err != nil {
 		return fmt.Errorf("error: could not get nodeInfo: %s", err)
