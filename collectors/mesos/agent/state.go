@@ -19,6 +19,8 @@ import (
 	"net/url"
 	"strconv"
 
+	log "github.com/Sirupsen/logrus"
+
 	"github.com/dcos/dcos-metrics/util/http/client"
 )
 
@@ -74,6 +76,6 @@ func (c *Collector) getAgentState() error {
 	}
 
 	c.HTTPClient.Timeout = HTTPTIMEOUT
-
+	log.Info("calling Fetch from state: ", c.Principal, ":", c.Secret)
 	return client.Fetch(c.HTTPClient, u, &c.agentState, c.Principal, c.Secret)
 }

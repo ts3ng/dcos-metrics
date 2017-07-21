@@ -42,7 +42,7 @@ func Fetch(client *http.Client, url url.URL, target interface{}, user string, pa
 		return err
 	}
 
-	log.Info("Http authentication credentials: ", user, ":", pass)
+	log.Info("FETCH: Http authentication credentials: ", user, ":", pass)
 	req.Header.Set("User-Agent", USERAGENT)
 	req.SetBasicAuth(user, pass)
 
