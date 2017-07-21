@@ -55,8 +55,8 @@ type Collector struct {
 	timestamp   int64
 
 	//basic auth
-	Principal string `yaml:principal`
-	Secret    string `yaml:secret`
+	Principal string `yaml:"principal"`
+	Secret    string `yaml:"secret"`
 }
 
 // New creates a new instance of the Mesos agent collector (poller).
